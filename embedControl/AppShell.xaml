@@ -5,18 +5,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:embedControl"
     xmlns:views="clr-namespace:embedControl.Views"
-    Shell.FlyoutBehavior="Disabled">
+    Shell.FlyoutBehavior="Flyout">
 
-    <TabBar>
-        <ShellContent
-            Title="Embed Control"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage" />
-        <ShellContent
-            Title="Global Settings"
-            ContentTemplate="{DataTemplate views:GlobalSettingsPage}"
-            Route="GlobalSettingsPage" />
-
-    </TabBar>
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout>
+            <Image Source="embed_control_logo.png" />
+            <Label Text="Embed Control" FontSize="24" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
+    
+    <FlyoutItem Title="Home">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem Title="Settings">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate views:GlobalSettingsPage}" Route="GlobalSettingsPage" />
+        </Tab>
+    </FlyoutItem>
 
 </Shell>
