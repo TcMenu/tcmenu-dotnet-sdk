@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             x:Class="embedCONTROL.Views.FormsFgBgColorPicker"
+             BindingContext="{Binding Source={RelativeSource Self}}" BackgroundColor="Transparent">
+    <StackLayout Orientation="Horizontal" VerticalOptions="Center" Spacing="5">
+        <Frame BorderColor="Black" x:Name="OuterLabelFrame">
+            <Label VerticalOptions="Center" Text="{Binding FieldName}" WidthRequest="110" 
+             x:Name="TextBoxColor" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+        </Frame>
+        <Button Text="Background" BackgroundColor="LightGray" Clicked="ChangeBackgroundColor"/>
+        <Button Text="Foreground" BackgroundColor="LightGray" Clicked="ChangeForegroundColor"/>
+    </StackLayout>
+</ContentView>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="embedControl.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:embedControl"
+    xmlns:views="clr-namespace:embedControl.Views"
+    Shell.FlyoutBehavior="Disabled">
+
+    <TabBar>
+        <ShellContent
+            Title="Embed Control"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+        <ShellContent
+            Title="Global Settings"
+            ContentTemplate="{DataTemplate views:GlobalSettingsPage}"
+            Route="GlobalSettingsPage" />
+
+    </TabBar>
+
+</Shell>
