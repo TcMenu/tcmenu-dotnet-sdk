@@ -4,12 +4,11 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:embedControl"
-    xmlns:views="clr-namespace:embedControl.Views"
-    Shell.FlyoutBehavior="Flyout">
+    xmlns:views="clr-namespace:embedControl.Views" Shell.FlyoutBehavior="{Binding FlyoutMode}">
 
     <Shell.FlyoutHeader>
         <VerticalStackLayout>
-            <Image Source="embed_control_logo.png" />
+            <Image Source="embed_control_logo.png" HeightRequest="200" />
             <Label Text="Embed Control" FontSize="24" HorizontalOptions="Center" />
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
@@ -24,5 +23,9 @@
             <ShellContent ContentTemplate="{DataTemplate views:GlobalSettingsPage}" Route="GlobalSettingsPage" />
         </Tab>
     </FlyoutItem>
-
+    <FlyoutItem Title="Greenhouse 1">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate views:TcMenuConnectionPage}" Route="TcMenuConnectionPage" />
+        </Tab>
+    </FlyoutItem>
 </Shell>

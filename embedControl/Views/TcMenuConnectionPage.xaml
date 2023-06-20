@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="embedControl.Views.TcMenuConnectionPage"
+             Title="{Binding ConnectionName}">
+    <VerticalStackLayout>
+        <Grid BackgroundColor="{Binding DialogColor.Bg }" IsVisible="{Binding DialogOnDisplay}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" FontSize="24" TextColor="{Binding DialogColor.Fg}"
+                   Text="{Binding DialogHeader}"/>
+            <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="18" TextColor="{Binding DialogColor.Fg}"
+                   Text="{Binding DialogBuffer}"/>
+            <Button Grid.Row="2" Grid.Column="0" FontSize="24" Text="{Binding Button1Text}" Clicked="OnDialogChanged" x:Name="DlgBtn1"
+                    TextColor="{Binding ButtonColor.Fg}" BackgroundColor="{Binding ButtonColor.Bg }"/>
+            <Button Grid.Row="2" Grid.Column="1" FontSize="24" Text="{Binding Button2Text}" Clicked="OnDialogChanged" x:Name="DlgBtn2"
+                    TextColor="{Binding ButtonColor.Fg}" BackgroundColor="{Binding ButtonColor.Bg }"/>
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

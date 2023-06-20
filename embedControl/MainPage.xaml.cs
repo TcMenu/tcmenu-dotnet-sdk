@@ -1,7 +1,7 @@
 ﻿using embedCONTROL.Services;
 using System.Runtime.ConstrainedExecution;
 using TcMenu.CoreSdk.Util;
-using TcMenuCoreMaui.AppShell;
+using TcMenuCoreMaui.FormUi;
 using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
 namespace embedControl;

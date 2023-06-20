@@ -7,7 +7,7 @@ using TcMenu.CoreSdk.MenuItems;
 using TcMenu.CoreSdk.Protocol;
 using TcMenu.CoreSdk.RemoteCore;
 using TcMenu.CoreSdk.RemoteStates;
-using TcMenuCoreMaui.AppShell;
+using TcMenuCoreMaui.FormUi;
 using TcMenuCoreMaui.Services;
 using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 

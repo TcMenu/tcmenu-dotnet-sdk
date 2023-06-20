@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TcMenuCoreMaui.Controls;
 using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
-namespace TcMenuCoreMaui.AppShell
+namespace TcMenuCoreMaui.FormUi
 {
     public class LoadedMenuForm
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
-namespace TcMenuCoreMaui.AppShell
+namespace TcMenuCoreMaui.FormUi
 {
     
     public interface IMauiNavigation
