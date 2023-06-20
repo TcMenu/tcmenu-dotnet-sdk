@@ -170,6 +170,8 @@ namespace TcMenu.CoreSdk.Serialisation
 
         public static string FormatForDisplay(MenuItem item, object data)
         {
+            data = data ?? MenuItemHelper.GetDefaultFor(item);
+
             switch(item)
             {
                 case FloatMenuItem fl:

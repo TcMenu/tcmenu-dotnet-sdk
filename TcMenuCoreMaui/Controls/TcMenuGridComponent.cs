@@ -13,29 +13,37 @@ using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
 namespace TcMenuCoreMaui.Controls
 {
+    public delegate void SubMenuNavigator(SubMenuItem item);
+
     public class TcMenuGridComponent : IDisposable
     {
         private readonly Dictionary<int, IEditorComponent> _editorComponents = new();
         private readonly IRemoteController _controller;
         private readonly PrefsAppSettings _appSettings;
         private readonly IMenuEditorFactory _factory;
-        private readonly IMauiNavigation _navMgr;
         private readonly Grid _grid;
         private volatile bool _started = false;
         private readonly LoadedMenuForm _loadedForm;
         private int _row = 0;
+        private readonly IConditionalColoring _globalColorScheme;
+        private readonly SubMenuNavigator _subNavigator;
+        private MenuItem _menuItem;
 
-        public TcMenuGridComponent(IRemoteController controller, PrefsAppSettings appSettings, LoadedMenuForm loadedForm, Grid grid)
+        public TcMenuGridComponent(IRemoteController controller, IMenuEditorFactory factory, PrefsAppSettings appSettings, 
+                                   LoadedMenuForm loadedForm, Grid grid, SubMenuNavigator navigator)
         {
-
+            _globalColorScheme = new PrefsConditionalColoring(appSettings);
+            _factory = factory;
             _appSettings = appSettings;
             _grid = grid;
             _controller = controller;
+            _subNavigator = navigator;
             _loadedForm = loadedForm;
         }
 
         public void Start(MenuItem menuItem)
         {
+            _menuItem = menuItem;
             _controller.MenuChangedEvent += Controller_MenuChangedEvent;
             _controller.AcknowledgementsReceived += Controller_AcknowledgementsReceived;
             _controller.Connector.ConnectionChanged += Connector_ConnectionChanged;
@@ -66,7 +74,7 @@ namespace TcMenuCoreMaui.Controls
                 {
                     _editorComponents.Clear();
                     _grid.Clear();
-                    RenderMenuRecursive(MenuTree.ROOT, _appSettings, 0);
+                    RenderMenuRecursive(_menuItem as SubMenuItem, _appSettings, 0);
                 });
             }
         }
@@ -79,9 +87,10 @@ namespace TcMenuCoreMaui.Controls
             }
 
             var comp = component.ViewItem;
-            _grid.Add(comp, position.Col, position.Row);
+            EnsureEnoughRowColPositions(position);
             Grid.SetRowSpan(comp, position.RowSpan);
             Grid.SetColumnSpan(comp, position.ColSpan);
+            _grid.Add(comp, position.Col, position.Row);
         }
 
         public void AddTextAtPosition(ComponentSettings settings, string toAdd)
@@ -93,9 +102,22 @@ namespace TcMenuCoreMaui.Controls
                 FontAttributes = FontAttributes.Bold
             };
             var position = settings.Positioning;
-            _grid.Add(label, position.Col, position.Row);
+            EnsureEnoughRowColPositions(position);
             Grid.SetRowSpan(label, position.RowSpan);
             Grid.SetColumnSpan(label, position.ColSpan);
+            _grid.Add(label, position.Col, position.Row);
+        }
+
+        private void EnsureEnoughRowColPositions(ComponentPositioning position)
+        {
+            while(_grid.ColumnDefinitions.Count < position.Col)
+            {
+                _grid.ColumnDefinitions.Add(new ColumnDefinition{ Width = GridLength.Star});
+            }
+            while (_grid.RowDefinitions.Count < position.Row)
+            {
+                _grid.RowDefinitions.Add(new RowDefinition{ Height= GridLength.Auto});
+            }
         }
 
         public IEditorComponent GetComponentEditorItem(IMenuEditorFactory editorFactory, MenuItem item, ComponentSettings componentSettings)
@@ -104,7 +126,7 @@ namespace TcMenuCoreMaui.Controls
 
             if (item is SubMenuItem sub) {
                 return editorFactory.CreateButtonWithAction(sub, sub.Name, componentSettings,
-                    subMenuItem=>_navMgr.PushMenuNavigation(subMenuItem as SubMenuItem, _loadedForm));
+                    subMenuItem=> _subNavigator?.Invoke(subMenuItem as SubMenuItem));
             }
 
             return componentSettings.ControlType switch
@@ -127,7 +149,7 @@ namespace TcMenuCoreMaui.Controls
         /// Use this to get a component position that needs a full row of its own
         /// </summary>
         /// <returns>A component position that takes a full row of the layout</returns>
-        private void RenderMenuRecursive(SubMenuItem sub, PrefsAppSettings appSettings, int level)
+        public void RenderMenuRecursive(SubMenuItem sub, PrefsAppSettings appSettings, int level)
         {
             var tree = _controller.ManagedMenu;
 
@@ -162,7 +184,7 @@ namespace TcMenuCoreMaui.Controls
                         if (editorControl != null)
                         {
                             MenuItemHelper.GetValueFor(item, tree, MenuItemHelper.GetDefaultFor(item));
-                            AddItemAtPosition(DefaultSpaceForItem(item), editorControl, true);
+                            AddItemAtPosition(settings.Positioning, editorControl, true);
                             editorControl.OnItemUpdated(tree.GetState(item));
                         }
                     }
@@ -174,7 +196,7 @@ namespace TcMenuCoreMaui.Controls
         {
             var pos = DefaultSpaceForItem(item);
             return new ComponentSettings(
-                _loadedForm.ColorSchemeAtPosition(pos),
+                _loadedForm.ColorSchemeAtPosition(pos) ?? _globalColorScheme,
                 FontInformation.Font100Percent,
                 pos,
                 DefaultJustificationForItem(item),
@@ -186,7 +208,7 @@ namespace TcMenuCoreMaui.Controls
         private ComponentSettings GetSettingsForStaticItem(ComponentPositioning positioning)
         {
             return new ComponentSettings(
-                _loadedForm.ColorSchemeAtPosition(positioning),
+                _loadedForm.ColorSchemeAtPosition(positioning) ?? _globalColorScheme,
                 FontInformation.Font100Percent, positioning, PortableAlignment.Left,
                 RedrawingMode.ShowName, ControlType.TextControl
             );
@@ -204,7 +226,8 @@ namespace TcMenuCoreMaui.Controls
 
         protected ComponentPositioning DefaultSpaceForItem(MenuItem item)
         {
-            var pos = new ComponentPositioning(_row, 0, 1, _loadedForm.GridSize);
+            var gridSize = _loadedForm.GridSize == 0 ? 1 : _loadedForm.GridSize;
+            var pos = new ComponentPositioning(_row, 0, 1, gridSize);
             _row++;
             return pos;
         }
@@ -245,6 +268,7 @@ namespace TcMenuCoreMaui.Controls
 
         public void Dispose()
         {
+            Stop();
             _grid.Children.Clear();
             _editorComponents.Clear();
         }

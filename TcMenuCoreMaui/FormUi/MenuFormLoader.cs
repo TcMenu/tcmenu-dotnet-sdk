@@ -28,7 +28,7 @@ namespace TcMenuCoreMaui.FormUi
 
         public IConditionalColoring ColorSchemeAtPosition(ComponentPositioning positioning)
         {
-            throw new NotImplementedException();
+            return ColorScheme;
         }
     }
 

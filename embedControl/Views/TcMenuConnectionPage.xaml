@@ -22,6 +22,13 @@
                     TextColor="{Binding ButtonColor.Fg}" BackgroundColor="{Binding ButtonColor.Bg }"/>
             <Button Grid.Row="2" Grid.Column="1" FontSize="24" Text="{Binding Button2Text}" Clicked="OnDialogChanged" x:Name="DlgBtn2"
                     TextColor="{Binding ButtonColor.Fg}" BackgroundColor="{Binding ButtonColor.Bg }"/>
+        </Grid> <!-- End dialog -->
+
+        <Button Text="[..] Back to previous level" TextColor="{Binding ButtonColor.Fg}" BackgroundColor="{Binding ButtonColor.Bg }" 
+                Margin="0, 15" IsVisible="{Binding BackOptionNeeded}"/>
+        <Grid x:Name="ControlsGrid">
+
         </Grid>
+        <Label Text="{Binding DetailedConnectionInfo}" Margin="0, 10, 0, 5"/>
     </VerticalStackLayout>
 </ContentPage>

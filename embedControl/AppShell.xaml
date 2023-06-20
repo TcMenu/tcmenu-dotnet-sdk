@@ -8,7 +8,7 @@
 
     <Shell.FlyoutHeader>
         <VerticalStackLayout>
-            <Image Source="embed_control_logo.png" HeightRequest="200" />
+            <Image Source="embed_control_logo.png" HeightRequest="200" Margin="0, 10"/>
             <Label Text="Embed Control" FontSize="24" HorizontalOptions="Center" />
         </VerticalStackLayout>
     </Shell.FlyoutHeader>

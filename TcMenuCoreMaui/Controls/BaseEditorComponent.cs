@@ -5,6 +5,7 @@ using TcMenu.CoreSdk.Commands;
 using TcMenu.CoreSdk.MenuItems;
 using TcMenu.CoreSdk.Protocol;
 using TcMenu.CoreSdk.RemoteCore;
+using Font = Microsoft.Maui.Font;
 using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
 namespace TcMenuCoreMaui.Controls
@@ -67,7 +68,8 @@ namespace TcMenuCoreMaui.Controls
                 _status = status;
                 _lastUpdate = DateTime.Now;
             }
-            UpdateEditor();
+
+            MainThread.InvokeOnMainThreadAsync(UpdateEditor);
         }
 
         public void Tick()
@@ -145,6 +147,25 @@ namespace TcMenuCoreMaui.Controls
         public bool IsItemEditable(MenuItem item)
         {
             return _userEditableMenuItemTypes.Contains(item.GetType()) && !item.ReadOnly;
+        }
+
+        public double ToScaledSize(FontInformation info)
+        {
+            if (info.Measurement == FontSizeMeasurement.ABS_SIZE)
+                return info.Size;
+            else
+                return Font.Default.Size * (info.Size / 100.0);
+        }
+
+        public TextAlignment ToMauiTextAlignment(PortableAlignment just)
+        {
+            return just switch
+            {
+                PortableAlignment.Left => TextAlignment.Start,
+                PortableAlignment.Right => TextAlignment.End,
+                PortableAlignment.Center => TextAlignment.Center,
+                _ => throw new ArgumentOutOfRangeException(nameof(just), just, null)
+            };
         }
     }
 }

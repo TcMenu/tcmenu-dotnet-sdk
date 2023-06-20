@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TcMenu.CoreSdk.Commands;
+using TcMenu.CoreSdk.Util;
 
 namespace TcMenu.CoreSdk.RemoteCore
 {
@@ -18,6 +19,7 @@ namespace TcMenu.CoreSdk.RemoteCore
         public int Minor { get; }
         public string Uuid { get; }
         public int SerialNumber { get; }
+        public LibraryVersion Version { get; }
 
         public RemoteInformation(string name, int version, ApiPlatform platform, string uuid, int serialNumber)
         {
@@ -26,6 +28,7 @@ namespace TcMenu.CoreSdk.RemoteCore
             Name = name;
             Platform = platform;
             Uuid = uuid;
+            Version = new LibraryVersion(Major, Minor, 0, ReleaseType.STABLE);
             SerialNumber = serialNumber;
         }
 
