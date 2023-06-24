@@ -36,6 +36,8 @@ namespace embedControl.Models
 
     }
 
+    public delegate void PairingNotifier();
+
     public class TcMenuConnectionModel : INotifyPropertyChanged
     {
         private readonly IRemoteController _remoteController;
@@ -43,6 +45,7 @@ namespace embedControl.Models
         private readonly Stack<MenuItem> _navigationItems = new();
         private MenuButtonType _button1Type = MenuButtonType.NONE;
         private MenuButtonType _button2Type = MenuButtonType.NONE;
+        private readonly PairingNotifier _pairingNotifier;
         public bool BackOptionNeeded => _navigationItems.Peek()?.Id != 0;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -78,10 +81,11 @@ namespace embedControl.Models
         public TcMenuGridComponent GridComponent { get; set; }
         public MenuItem CurrentNavItem => _navigationItems.Peek();
 
-        public TcMenuConnectionModel(IRemoteController controller, PrefsAppSettings settings, Grid controlsGrid, MenuItem where, SubMenuNavigator navigator)
+        public TcMenuConnectionModel(IRemoteController controller, PrefsAppSettings settings, Grid controlsGrid, MenuItem where, SubMenuNavigator navigator, PairingNotifier pairingNotification)
         {
             _navigationItems.Push(where);
             _remoteController = controller;
+            _pairingNotifier = pairingNotification;
 
             _appSettings = settings;
             var settingsConditional = new PrefsConditionalColoring(settings);
@@ -102,6 +106,11 @@ namespace embedControl.Models
             {
                 PropHasChanged(nameof(ConnectionName));
                 PropHasChanged(nameof(DetailedConnectionInfo));
+
+                if (connected == AuthenticationStatus.FAILED_AUTH)
+                {
+                    _pairingNotifier?.Invoke();
+                }
             });
         }
 
@@ -179,6 +188,11 @@ namespace embedControl.Models
             DialogOnDisplay = false;
             PropHasChanged(nameof(DialogOnDisplay));
             GridComponent.CompletelyResetGrid(null);
+        }
+
+        public void Stop()
+        {
+            _remoteController.Stop();
         }
     }
 

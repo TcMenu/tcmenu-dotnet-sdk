@@ -20,12 +20,14 @@ namespace embedControl.Services
         public string ConnectionName { get; }
         public string ConnectionDescription => $"{ConnectionConfiguration.Describe} - ID={LocalId}";
         public IConnectionConfiguration ConnectionConfiguration { get; }
+        public DateTime LastOpened { get; set; }
 
-        public TcMenuPanelSettings(int localId, string connName, IConnectionConfiguration connectionConfiguration)
+        public TcMenuPanelSettings(int localId, string connName, IConnectionConfiguration connectionConfiguration, DateTime lastOpened)
         {
             LocalId = localId;
             ConnectionName = connName;
             ConnectionConfiguration = connectionConfiguration;
+            LastOpened = lastOpened;
         }
     }
 
@@ -58,6 +60,7 @@ namespace embedControl.Services
         {
             LocalId = settings.LocalId;
             ConnectionName = settings.ConnectionName;
+            LastModified = settings.LastOpened;
             switch (settings.ConnectionConfiguration)
             {
                 case SimulatorConfiguration sc:
@@ -93,6 +96,7 @@ namespace embedControl.Services
         public string IpPortOrBaud { get; set; }
         public byte[] RawExtraData { get; set; }
         public string FormName { get; set; }
+        public DateTime LastModified { get; set; }
     }
 
     internal class TcMenuFormPersistenceObject
@@ -153,29 +157,34 @@ namespace embedControl.Services
                 _database.CreateTable<PrefsPersistenceObject>();
                 _database.CreateTable<TcMenuConnectionPersistenceObject>();
 
-                foreach (var tc in _database.Table<TcMenuConnectionPersistenceObject>().ToList())
-                {
-                    try
-                    {
-                        IConnectionConfiguration config = tc.ConnectionType switch
-                        {
-                            SimulatedConnection => new SimulatorConfiguration(tc.ConnectionName,
-                                Encoding.UTF8.GetString(tc.RawExtraData)),
-                            RawSocketConnection => new RawSocketConfiguration(tc.HostOrSerialInfo,
-                                Convert.ToInt32(tc.IpPortOrBaud)),
-                            SerialConnection => new SerialCommsConfiguration(SerialPortInformation.FromWire(tc.HostOrSerialInfo), Convert.ToInt32(tc.IpPortOrBaud))
-                        };
-                        _settings[tc.LocalId] = new TcMenuPanelSettings(tc.LocalId, tc.ConnectionName, config);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
+                ReloadAllEntriesFromDatabase();
             }
             catch(Exception ex)
             {
 
+            }
+        }
+
+        private void ReloadAllEntriesFromDatabase()
+        {
+            foreach (var tc in _database.Table<TcMenuConnectionPersistenceObject>().ToList())
+            {
+                try
+                {
+                    IConnectionConfiguration config = tc.ConnectionType switch
+                    {
+                        SimulatedConnection => new SimulatorConfiguration(tc.ConnectionName,
+                            Encoding.UTF8.GetString(tc.RawExtraData)),
+                        RawSocketConnection => new RawSocketConfiguration(tc.HostOrSerialInfo,
+                            Convert.ToInt32(tc.IpPortOrBaud)),
+                        SerialConnection => new SerialCommsConfiguration(SerialPortInformation.FromWire(tc.HostOrSerialInfo),
+                            Convert.ToInt32(tc.IpPortOrBaud))
+                    };
+                    _settings[tc.LocalId] = new TcMenuPanelSettings(tc.LocalId, tc.ConnectionName, config, tc.LastModified);
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
 
@@ -257,6 +266,7 @@ namespace embedControl.Services
             if (!_settings.ContainsKey(connection.LocalId)) return;
 
             _database.Update(new TcMenuConnectionPersistenceObject(connection));
+            _settings[connection.LocalId] = connection;
             ChangeNotification?.Invoke(connection, PanelSettingChangeMode.Modified);
         }
 
@@ -265,6 +275,8 @@ namespace embedControl.Services
             if (connection.LocalId != -1) return;
 
             _database.Insert(new TcMenuConnectionPersistenceObject(connection));
+            ReloadAllEntriesFromDatabase();
+
             ChangeNotification?.Invoke(connection, PanelSettingChangeMode.Added);
         }
     } 

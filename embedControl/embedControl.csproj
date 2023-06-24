@@ -50,6 +50,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\embed_control_logo.png" />
+	  <None Remove="Resources\Images\pairing_example.jpg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -73,6 +74,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\DevicePairingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\FormsFgBgColorPicker.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

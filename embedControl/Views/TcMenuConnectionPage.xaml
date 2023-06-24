@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="embedControl.Views.TcMenuConnectionPage"
              Title="{Binding ConnectionName}">
+    <ScrollView>
     <VerticalStackLayout>
         <Grid BackgroundColor="{Binding DialogColor.Bg }" IsVisible="{Binding DialogOnDisplay}">
             <Grid.ColumnDefinitions>
@@ -42,4 +43,5 @@
             </VerticalStackLayout>
         </Border>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

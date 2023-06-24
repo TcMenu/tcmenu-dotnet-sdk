@@ -5,7 +5,7 @@ using TcMenu.CoreSdk.Util;
 using TcMenuCoreMaui.FormUi;
 using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
-namespace embedControl;
+namespace embedControl.Views;
 
 public partial class MainPage : ContentPage
 {
@@ -17,8 +17,9 @@ public partial class MainPage : ContentPage
         BindingContext = EmbedControlViewModel.Instance;
     }
 
-    private void OnCounterClicked(object sender, EventArgs e)
+    private async void OnCreateNewConnection(object sender, EventArgs e)
     {
+        await Shell.Current.GoToAsync(nameof(NewConnectionDetail));
     }
 }
 

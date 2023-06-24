@@ -2,6 +2,7 @@
 using embedCONTROL.Services;
 using embedControl.Views;
 using embedCONTROL.Views;
+using System;
 
 namespace embedControl
 {
@@ -23,5 +24,10 @@ namespace embedControl
             Routing.RegisterRoute("MyConnectionsPage", typeof(MyConnectionsPage));
         }
 
+        private async void OnHelpClicked(object sender, EventArgs e)
+        {
+            await Browser.Default.OpenAsync("https://www.thecoderscorner.com/products/apps/embed-control/", BrowserLaunchMode.SystemPreferred);
+
+        }
     }
 }

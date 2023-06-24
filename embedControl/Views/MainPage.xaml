@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="embedControl.MainPage"
-             BindingContext=""
-             >
+             x:Class="embedControl.Views.MainPage">
 
     <ScrollView>
         <VerticalStackLayout
@@ -33,7 +31,7 @@
                 x:Name="CounterBtn"
                 Text="Create a new connection"
                 SemanticProperties.Hint="Create a connection to an existing board"
-                Clicked="OnCounterClicked"
+                Clicked="OnCreateNewConnection"
                 HorizontalOptions="Center" />
 
         </VerticalStackLayout>

@@ -16,7 +16,7 @@
     
     <FlyoutItem Title="Home">
         <Tab>
-            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage"/>
+            <ShellContent ContentTemplate="{DataTemplate views:MainPage}" Route="MainPage"/>
         </Tab>
     </FlyoutItem>
     <FlyoutItem Title="Settings">
@@ -36,6 +36,5 @@
     </FlyoutItem>
     <MenuItem Text="Help"
               IconImageSource="help.png"
-              Command="{Binding HelpCommand}"
-              CommandParameter="https://www.thecoderscorner.com/products/apps/embed-control/" />
+              Clicked="OnHelpClicked" />
 </Shell>

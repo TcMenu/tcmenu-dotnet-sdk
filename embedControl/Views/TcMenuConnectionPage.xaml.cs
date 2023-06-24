@@ -12,8 +12,6 @@ using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
 namespace embedControl.Views;
 
-[QueryProperty(nameof(LocalID), "LocalID")]
-
 public partial class TcMenuConnectionPage : ContentPage
 {
     private ILogger _logger = Log.Logger.ForContext<TcMenuConnectionPage>();
@@ -21,24 +19,17 @@ public partial class TcMenuConnectionPage : ContentPage
     private readonly object _remoteLock = new();
     private TcMenuPanelSettings _panelSettings;
 
-    public int LocalID
-    {
-        get => _panelSettings?.LocalId ?? 0;
-        set
-        {
-            _panelSettings = ApplicationContext.Instance.MenuPersitence[value];
-            _remoteController = _panelSettings.ConnectionConfiguration.Build();
-            ConnectionModel = new TcMenuConnectionModel(_remoteController, ApplicationContext.Instance.AppSettings, ControlsGrid, MenuTree.ROOT,
-                item => HandleNavigation(item as SubMenuItem));
-            BindingContext = ConnectionModel;
-        }
-    }
-
     public TcMenuConnectionModel ConnectionModel { get; set; }
 
-    public TcMenuConnectionPage()
+    public TcMenuConnectionPage(TcMenuPanelSettings panelSettings)
 	{
 		InitializeComponent();
+
+        _panelSettings = panelSettings;
+        _remoteController = _panelSettings.ConnectionConfiguration.Build();
+        ConnectionModel = new TcMenuConnectionModel(_remoteController, ApplicationContext.Instance.AppSettings, ControlsGrid, MenuTree.ROOT,
+            item => HandleNavigation(item as SubMenuItem), PresentPairingDialog);
+        BindingContext = ConnectionModel;
     }
 
     private void HandleNavigation(SubMenuItem item)
@@ -50,6 +41,12 @@ public partial class TcMenuConnectionPage : ContentPage
     private void OnDialogChanged(object sender, EventArgs e)
     {
             ConnectionModel.SendDialogEvent(sender.Equals(DlgBtn1) ? 0 : 1);
+    }
+
+    protected override void OnDisappearing()
+    {
+        ConnectionModel.Stop();
+        base.OnDisappearing();
     }
 
     private void OnBackButtonClick(object sender, EventArgs e)
@@ -73,6 +70,7 @@ public partial class TcMenuConnectionPage : ContentPage
             ApplicationContext.Instance.ThreadMarshaller.OnUiThread(() =>
             {
                 ConnectionModel.CompletelyDisconnected();
+                Navigation.PopAsync();
             });
         }
     }
@@ -85,7 +83,7 @@ public partial class TcMenuConnectionPage : ContentPage
         {
             // delete connection
             ApplicationContext.Instance.MenuPersitence.Delete(_panelSettings.LocalId);
-            await Shell.Current.GoToAsync("//MainPage");
+            await Shell.Current.GoToAsync("//" + nameof(MyConnectionsPage));
         }
     }
 
@@ -99,5 +97,21 @@ public partial class TcMenuConnectionPage : ContentPage
             });
 
         await Navigation.PushModalAsync(n);
+    }
+
+    private async void PresentPairingDialog()
+    {
+        ConnectionModel.Stop();
+        var pairing = new DevicePairingPage(_panelSettings.ConnectionConfiguration, OnPairingFinished);
+        await Navigation.PushModalAsync(pairing);
+    }
+
+    private void OnPairingFinished(bool obj)
+    {
+        Navigation.PopModalAsync();
+
+        _remoteController = _panelSettings.ConnectionConfiguration.Build();
+        ConnectionModel = new TcMenuConnectionModel(_remoteController, ApplicationContext.Instance.AppSettings, ControlsGrid, MenuTree.ROOT,
+            item => HandleNavigation(item as SubMenuItem), PresentPairingDialog);
     }
 }

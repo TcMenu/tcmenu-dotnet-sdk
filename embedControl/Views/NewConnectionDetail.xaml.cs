@@ -124,11 +124,11 @@ namespace embedControl.Views
                 return;
             }
 
-            var connection = new TcMenuPanelSettings(-1, ConnectionNameEntry.Text, connectionData);
+            var connection = new TcMenuPanelSettings(-1, ConnectionNameEntry.Text, connectionData, DateTime.Now);
             if (_existingConfiguration == null)
             {
                 ApplicationContext.Instance.MenuPersitence.Insert(connection);
-                await Shell.Current.GoToAsync("//" +nameof(MyConnectionsPage));
+                await Shell.Current.GoToAsync(nameof(MyConnectionsPage));
             }
             else
             {

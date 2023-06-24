@@ -1,5 +1,6 @@
 ﻿using embedCONTROL.Services;
 using System.Runtime.ConstrainedExecution;
+using embedControl.Views;
 using TcMenu.CoreSdk.StoreWrapper;
 using TcMenu.CoreSdk.Util;
 using TcMenuCoreMaui.BaseSerial;

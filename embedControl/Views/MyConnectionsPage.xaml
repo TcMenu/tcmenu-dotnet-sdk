@@ -4,8 +4,8 @@
              x:Class="embedControl.Views.MyConnectionsPage"
              Title="My Connections">
     <VerticalStackLayout>
-        <Label Text="Active Connections" FontAttributes="Bold" FontSize="18"/>
-        <ListView ItemsSource="{Binding ActiveConnections}">
+        <Label Text="Recent Connections" FontAttributes="Bold" FontSize="18"/>
+        <ListView ItemsSource="{Binding RecentConnections}" ItemSelected="NavigateSelectedItem">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding ConnectionName}"
@@ -14,7 +14,7 @@
             </ListView.ItemTemplate>
         </ListView>
         <Label Text="Available Connections" FontAttributes="Bold" FontSize="18" Margin="0,15,0,0"/>
-        <ListView ItemsSource="{Binding AllConnections}">
+        <ListView ItemsSource="{Binding AllConnections}"  ItemSelected="NavigateSelectedItem">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding ConnectionName}"
