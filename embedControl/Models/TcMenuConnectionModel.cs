@@ -40,16 +40,14 @@ namespace embedControl.Models
     {
         private readonly IRemoteController _remoteController;
         private readonly PrefsAppSettings _appSettings;
-        private readonly MenuItem _startingPoint;
+        private readonly Stack<MenuItem> _navigationItems = new();
         private MenuButtonType _button1Type = MenuButtonType.NONE;
         private MenuButtonType _button2Type = MenuButtonType.NONE;
+        public bool BackOptionNeeded => _navigationItems.Peek()?.Id != 0;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string ConnectionName => _remoteController?.Connector?.ConnectionName + " " + ToPrettyAuth(_remoteController?.Connector?.AuthStatus);
-
-        public bool BackOptionNeeded => !Equals(_startingPoint, MenuTree.ROOT);
-
 
         private string ToPrettyAuth(AuthenticationStatus? auth)
         {
@@ -77,10 +75,12 @@ namespace embedControl.Models
         public string DialogBuffer { get; set; } = "Buffer";
         public string Button1Text { get; set; } = "OK";
         public string Button2Text { get; set; } = "Cancel";
+        public TcMenuGridComponent GridComponent { get; set; }
+        public MenuItem CurrentNavItem => _navigationItems.Peek();
 
         public TcMenuConnectionModel(IRemoteController controller, PrefsAppSettings settings, Grid controlsGrid, MenuItem where, SubMenuNavigator navigator)
         {
-            _startingPoint = where;
+            _navigationItems.Push(where);
             _remoteController = controller;
 
             _appSettings = settings;
@@ -89,8 +89,9 @@ namespace embedControl.Models
             ButtonColor = new ControlToMauiColorHelper(settingsConditional, ColorComponentType.BUTTON);
 
             var editorFactory = new MauiMenuEditorFactory(_remoteController);
-            var gridComponent = new TcMenuGridComponent(_remoteController, editorFactory, settings, new LoadedMenuForm(), controlsGrid, navigator);
-            gridComponent.Start(_startingPoint);
+            GridComponent = new TcMenuGridComponent(_remoteController, editorFactory, settings, new MenuFormLoader(settings, controller.ManagedMenu), 
+                                                        controlsGrid, navigator);
+            GridComponent.Start(_navigationItems.Peek());
             _remoteController.DialogUpdatedEvent += RemoteControllerOnDialogUpdatedEvent;
             _remoteController.Connector.ConnectionChanged += RemoteControllerStatusChanged;
         }
@@ -155,6 +156,30 @@ namespace embedControl.Models
             return $"{connector.ConnectionName}({ToPrettyAuth(connector.AuthStatus)}) - {remote.Version} {remote.Platform} S/N {remote.SerialNumber} Type {remote.Uuid}";
         }
 
+        public void OnNavChange(SubMenuItem item)
+        {
+            if (item == null && _navigationItems.Count > 1)
+            {
+                // if the item is null, it means pop navigation, but only do it when we wouldn't lose the top level
+                _navigationItems.Pop();
+            }
+            else if (item != null)
+            {
+                // if the item is not null, then we navigate to that menu
+                _navigationItems.Push(item);
+            }
+            GridComponent.CompletelyResetGrid(_navigationItems.Peek());
+            PropHasChanged(nameof(BackOptionNeeded));
+        }
+
+        public void CompletelyDisconnected()
+        {
+            PropHasChanged(nameof(ConnectionName));
+            PropHasChanged(nameof(DetailedConnectionInfo));
+            DialogOnDisplay = false;
+            PropHasChanged(nameof(DialogOnDisplay));
+            GridComponent.CompletelyResetGrid(null);
+        }
     }
 
 }

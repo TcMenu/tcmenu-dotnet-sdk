@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using embedControl.Services;
 using TcMenu.CoreSdk.Protocol;
 using TcMenuCoreMaui.BaseSerial;
 using TcMenu.CoreSdk.Util;
@@ -22,14 +23,17 @@ namespace embedCONTROL.Services
         private static ApplicationContext _theInstance;
 
         private volatile ISerialPortFactory _serialPortFactory;
+        private readonly TcMenuConnectionPersistence _persistence;
         public UiThreadMashaller ThreadMarshaller {get;}
 
         public PrefsAppSettings AppSettings { get; }
-        public ISerialPortFactory SerialPortFactory => _serialPortFactory;
 
+        public IMenuConnectionPersister MenuPersitence => _persistence;
+
+        public ISerialPortFactory SerialPortFactory => _serialPortFactory;
         public bool IsSerialAvailable => _serialPortFactory != null;
 
-        public SystemClock Clock => new SystemClock();
+        public SystemClock Clock => new();
 
         public static ApplicationContext Instance
         {
@@ -52,8 +56,9 @@ namespace embedCONTROL.Services
 
             ThreadMarshaller = marshaller;
 
-            AppSettings = new PrefsAppSettings();
-            AppSettings.Load(configDir);
+            _persistence = new TcMenuConnectionPersistence();
+            _persistence.Initialise();
+            AppSettings = _persistence.LoadAppSettings();
 
             /*var persistor = new XmlMenuConnectionPersister(configDir);
             DataStore = new ConnectionDataStore(persistor);*/
@@ -65,6 +70,11 @@ namespace embedCONTROL.Services
         public void SetSerialFactory(ISerialPortFactory factory)
         {
             _serialPortFactory = factory;
+        }
+
+        public void SaveAllSettings()
+        {
+            _persistence.SaveAppSettings(AppSettings);
         }
     }
 }

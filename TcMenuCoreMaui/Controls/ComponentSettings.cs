@@ -39,6 +39,21 @@ namespace TcMenuCoreMaui.Controls
             RowSpan = rowSpan;
             ColSpan = colSpan;
         }
+
+        public static ComponentPositioning FromWire(string text)
+        {
+            var parts = text.Split(",\\s*");
+            if (parts.Length == 2)
+            {
+                return new ComponentPositioning(int.Parse(parts[0]), int.Parse(parts[1]), 1, 1);
+            }
+            else if (parts.Length == 4)
+            {
+                return new ComponentPositioning(int.Parse(parts[0]), int.Parse(parts[1]),
+                    int.Parse(parts[2]), int.Parse(parts[3]));
+            }
+            throw new  ArgumentException("Position not in the right format " + text);
+        }
     }
 
     public enum ControlType
@@ -110,6 +125,8 @@ namespace TcMenuCoreMaui.Controls
 
         public static FontInformation FromWire(string wireFormat)
         {
+            if(wireFormat == null) return Font100Percent;
+
             if (wireFormat.EndsWith("%"))
             {
                 return new FontInformation(int.Parse(wireFormat[..^1]), FontSizeMeasurement.PERCENT);

@@ -44,7 +44,7 @@ public partial class GlobalSettingsPage : ContentPage
         settings.TextColor = TextColorPicker.ItemColor;
         settings.HighlightColor = HighlightColorPicker.ItemColor;
         settings.DialogColor = DialogColorPicker.ItemColor;
-        settings.Save();
+        ApplicationContext.Instance.SaveAllSettings();
     }
 
     private void UpdateAllColors()

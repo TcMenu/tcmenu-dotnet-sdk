@@ -1,4 +1,7 @@
-﻿using embedControl.Views;
+﻿using embedControl.Services;
+using embedCONTROL.Services;
+using embedControl.Views;
+using embedCONTROL.Views;
 
 namespace embedControl
 {
@@ -13,8 +16,12 @@ namespace embedControl
             var currentMainDisplayInfo = Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo;
             FlyoutMode = currentMainDisplayInfo.Width >= currentMainDisplayInfo.Height ? FlyoutBehavior.Locked : FlyoutBehavior.Flyout;
 
+
             Routing.RegisterRoute("GlobalSettingsPage", typeof(GlobalSettingsPage));
             Routing.RegisterRoute("TcMenuConnectionPage", typeof(TcMenuConnectionPage));
+            Routing.RegisterRoute("NewConnectionDetail", typeof(NewConnectionDetail));
+            Routing.RegisterRoute("MyConnectionsPage", typeof(MyConnectionsPage));
         }
+
     }
 }

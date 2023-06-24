@@ -75,7 +75,7 @@ namespace TcMenuCoreMaui.Controls
 
             var grid = new Grid
             {
-                VerticalOptions = LayoutOptions.CenterAndExpand
+                VerticalOptions = LayoutOptions.Center
             };
 
             var col = 0;

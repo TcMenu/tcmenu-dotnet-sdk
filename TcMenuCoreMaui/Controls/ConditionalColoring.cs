@@ -33,7 +33,7 @@ namespace TcMenuCoreMaui.Controls
 
     public class PrefsConditionalColoring : IConditionalColoring
     {
-        private readonly string GlobalColorSetName = "Global";
+        public static readonly string GlobalColorSetName = "Global";
         private readonly PrefsAppSettings _settings;
 
         public string ColorName => "Preferences";

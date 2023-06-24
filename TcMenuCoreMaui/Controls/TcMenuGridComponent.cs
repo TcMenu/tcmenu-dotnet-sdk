@@ -23,14 +23,14 @@ namespace TcMenuCoreMaui.Controls
         private readonly IMenuEditorFactory _factory;
         private readonly Grid _grid;
         private volatile bool _started = false;
-        private readonly LoadedMenuForm _loadedForm;
+        private readonly MenuFormLoader _formLoader;
         private int _row = 0;
         private readonly IConditionalColoring _globalColorScheme;
         private readonly SubMenuNavigator _subNavigator;
         private MenuItem _menuItem;
 
         public TcMenuGridComponent(IRemoteController controller, IMenuEditorFactory factory, PrefsAppSettings appSettings, 
-                                   LoadedMenuForm loadedForm, Grid grid, SubMenuNavigator navigator)
+                                   MenuFormLoader formLoader, Grid grid, SubMenuNavigator navigator)
         {
             _globalColorScheme = new PrefsConditionalColoring(appSettings);
             _factory = factory;
@@ -38,7 +38,7 @@ namespace TcMenuCoreMaui.Controls
             _grid = grid;
             _controller = controller;
             _subNavigator = navigator;
-            _loadedForm = loadedForm;
+            _formLoader = formLoader;
         }
 
         public void Start(MenuItem menuItem)
@@ -72,10 +72,29 @@ namespace TcMenuCoreMaui.Controls
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    _editorComponents.Clear();
-                    _grid.Clear();
-                    RenderMenuRecursive(_menuItem as SubMenuItem, _appSettings, 0);
+                    CompletelyResetGrid(_menuItem);
                 });
+            }
+        }
+
+        public void CompletelyResetGrid(MenuItem menuItem)
+        {
+            // completely clear down all components.
+            _editorComponents.Clear();
+            _grid.Clear();
+            _grid.ColumnDefinitions.Clear();
+            _grid.RowDefinitions.Clear();
+            _editorComponents.Clear();
+
+            // if a menu item is provided navigate to it, if not, leave the grid cleared down and on Root.
+            if (menuItem != null)
+            {
+                _menuItem = menuItem;
+                RenderMenuRecursive(_menuItem as SubMenuItem, _appSettings, 0);
+            }
+            else
+            {
+                _menuItem = MenuTree.ROOT;
             }
         }
 
@@ -153,7 +172,7 @@ namespace TcMenuCoreMaui.Controls
         {
             var tree = _controller.ManagedMenu;
 
-            if (_loadedForm.HasLayoutFor(sub))
+            if (_formLoader.HasLayoutFor(sub))
             {
                 throw new FeatureNotSupportedException();
             }
@@ -196,7 +215,7 @@ namespace TcMenuCoreMaui.Controls
         {
             var pos = DefaultSpaceForItem(item);
             return new ComponentSettings(
-                _loadedForm.ColorSchemeAtPosition(pos) ?? _globalColorScheme,
+                _globalColorScheme,
                 FontInformation.Font100Percent,
                 pos,
                 DefaultJustificationForItem(item),
@@ -208,7 +227,7 @@ namespace TcMenuCoreMaui.Controls
         private ComponentSettings GetSettingsForStaticItem(ComponentPositioning positioning)
         {
             return new ComponentSettings(
-                _loadedForm.ColorSchemeAtPosition(positioning) ?? _globalColorScheme,
+                _globalColorScheme,
                 FontInformation.Font100Percent, positioning, PortableAlignment.Left,
                 RedrawingMode.ShowName, ControlType.TextControl
             );
@@ -226,7 +245,7 @@ namespace TcMenuCoreMaui.Controls
 
         protected ComponentPositioning DefaultSpaceForItem(MenuItem item)
         {
-            var gridSize = _loadedForm.GridSize == 0 ? 1 : _loadedForm.GridSize;
+            var gridSize = _formLoader.GridSize;
             var pos = new ComponentPositioning(_row, 0, 1, gridSize);
             _row++;
             return pos;
