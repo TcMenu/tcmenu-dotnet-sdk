@@ -5,7 +5,7 @@
              Title="{Binding ConnectionName}">
     <ScrollView>
     <VerticalStackLayout>
-        <Grid BackgroundColor="{Binding DialogColor.Bg }" IsVisible="{Binding DialogOnDisplay}">
+        <Grid BackgroundColor="{Binding DialogColor.Bg }" IsVisible="{Binding DialogOnDisplay}" Margin="0,0,0,10" Padding="3, 5" ColumnSpacing="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -19,9 +19,9 @@
                    Text="{Binding DialogHeader}"/>
             <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="18" TextColor="{Binding DialogColor.Fg}"
                    Text="{Binding DialogBuffer}"/>
-            <Button Grid.Row="2" Grid.Column="0" FontSize="24" Text="{Binding Button1Text}" Clicked="OnDialogChanged" x:Name="DlgBtn1"
+            <Button Grid.Row="2" Grid.Column="0" FontSize="24" Text="{Binding Button1Text}" Clicked="OnDialogChanged" x:Name="DlgBtn1" IsVisible="{Binding Button1Visible}"
                     TextColor="{Binding ButtonColor.Fg}" BackgroundColor="{Binding ButtonColor.Bg }"/>
-            <Button Grid.Row="2" Grid.Column="1" FontSize="24" Text="{Binding Button2Text}" Clicked="OnDialogChanged" x:Name="DlgBtn2"
+                <Button Grid.Row="2" Grid.Column="1" FontSize="24" Text="{Binding Button2Text}" Clicked="OnDialogChanged" x:Name="DlgBtn2" IsVisible="{Binding Button2Visible}"
                     TextColor="{Binding ButtonColor.Fg}" BackgroundColor="{Binding ButtonColor.Bg }"/>
         </Grid> <!-- End dialog -->
 

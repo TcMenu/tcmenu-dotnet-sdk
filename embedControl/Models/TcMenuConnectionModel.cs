@@ -80,6 +80,9 @@ namespace embedControl.Models
         public string Button2Text { get; set; } = "Cancel";
         public TcMenuGridComponent GridComponent { get; set; }
         public MenuItem CurrentNavItem => _navigationItems.Peek();
+        public bool Button1Visible { get; set; }
+        public bool Button2Visible { get; set; }
+
 
         public TcMenuConnectionModel(IRemoteController controller, PrefsAppSettings settings, Grid controlsGrid, MenuItem where, SubMenuNavigator navigator, PairingNotifier pairingNotification)
         {
@@ -123,6 +126,8 @@ namespace embedControl.Models
                 DialogBuffer = msg;
                 Button1Text = ButtonTextOf(b1);
                 Button2Text = ButtonTextOf(b2);
+                Button1Visible = b1 != MenuButtonType.NONE;
+                Button2Visible = b2 != MenuButtonType.NONE;
                 _button1Type = b1;
                 _button2Type = b2;
                 PropHasChanged(nameof(DialogOnDisplay));
@@ -130,6 +135,8 @@ namespace embedControl.Models
                 PropHasChanged(nameof(DialogBuffer));
                 PropHasChanged(nameof(Button1Text));
                 PropHasChanged(nameof(Button2Text));
+                PropHasChanged(nameof(Button1Visible));
+                PropHasChanged(nameof(Button2Visible));
             });
         }
 

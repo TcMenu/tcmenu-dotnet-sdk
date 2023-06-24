@@ -18,7 +18,7 @@
             <Label
                 Text="{Binding AppTitle}"
                 SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
+                FontSize="24"
                 HorizontalOptions="Center" />
 
             <Label
@@ -29,10 +29,11 @@
 
             <Button
                 x:Name="CounterBtn"
-                Text="Create a new connection"
-                SemanticProperties.Hint="Create a connection to an existing board"
-                Clicked="OnCreateNewConnection"
+                Text="Visit the Online Help"
+                Clicked="OnOnlineHelp"
                 HorizontalOptions="Center" />
+
+            
 
         </VerticalStackLayout>
     </ScrollView>

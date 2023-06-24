@@ -70,7 +70,7 @@ public partial class TcMenuConnectionPage : ContentPage
             ApplicationContext.Instance.ThreadMarshaller.OnUiThread(() =>
             {
                 ConnectionModel.CompletelyDisconnected();
-                Navigation.PopAsync();
+                Shell.Current.Navigation.PopAsync();
             });
         }
     }
@@ -106,9 +106,9 @@ public partial class TcMenuConnectionPage : ContentPage
         await Navigation.PushModalAsync(pairing);
     }
 
-    private void OnPairingFinished(bool obj)
+    private async void OnPairingFinished(bool obj)
     {
-        Navigation.PopModalAsync();
+        await Navigation.PopModalAsync();
 
         _remoteController = _panelSettings.ConnectionConfiguration.Build();
         ConnectionModel = new TcMenuConnectionModel(_remoteController, ApplicationContext.Instance.AppSettings, ControlsGrid, MenuTree.ROOT,

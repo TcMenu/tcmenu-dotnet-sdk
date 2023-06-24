@@ -63,7 +63,7 @@ namespace TcMenu.CoreSdk.SocketRemote
                 sender.Connect(remoteEndpoint);
                 sender.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, WORST_CASE_TIMEOUT);
                 sender.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, WORST_CASE_TIMEOUT);
-                sender.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+                //sender.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
                 _socket = sender;
                 logger.Information("Socket connection has been established to " + _socket.RemoteEndPoint.ToString());
                 return true;

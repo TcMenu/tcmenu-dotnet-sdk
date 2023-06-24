@@ -17,9 +17,9 @@ public partial class MainPage : ContentPage
         BindingContext = EmbedControlViewModel.Instance;
     }
 
-    private async void OnCreateNewConnection(object sender, EventArgs e)
+    private async void OnOnlineHelp(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(NewConnectionDetail));
+        await Browser.Default.OpenAsync("https://www.thecoderscorner.com/products/apps/embed-control/", BrowserLaunchMode.SystemPreferred);
     }
 }
 

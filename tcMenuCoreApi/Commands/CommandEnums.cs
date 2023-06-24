@@ -80,11 +80,11 @@ namespace TcMenu.CoreSdk.Commands
     /// </summary>
     public enum MenuButtonType
     {
-        NONE = 0,
-        OK = 1,
-        ACCEPT = 2,
-        CANCEL = 3,
-        CLOSE = 4
+        OK = 0,
+        ACCEPT = 1,
+        CANCEL = 2,
+        CLOSE = 3,
+        NONE = 4
     }
 
     /// <summary>
