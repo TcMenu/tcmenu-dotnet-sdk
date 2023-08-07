@@ -10,16 +10,16 @@ using TcMenu.CoreSdk.RemoteCore;
 using TcMenuCoreMaui.BaseSerial;
 
 
-namespace TcMenuCoreMaui.iOS.SerialImpl
+namespace embedControl.Platforms.iOS.Serial
 {
     public class AppleBluetoothSerialFactory : ISerialPortFactory
     {
-        public static readonly  CBUUID ServiceId = CBUUID.FromString("0256d4a7-90e2-41c7-8031-ad5f2b42fc84");
+        public static readonly CBUUID ServiceId = CBUUID.FromString("0256d4a7-90e2-41c7-8031-ad5f2b42fc84");
         private readonly CBCentralManager _btManager;
 
-        private volatile Action<SerialPortInformation> _portDelegate;
-        
-        public Action<SerialPortInformation> PortDelegate => _portDelegate;
+        private volatile SerialPortDelegate _portDelegate;
+
+        public SerialPortDelegate PortDelegate => _portDelegate;
 
         private Dictionary<string, CBPeripheral> _peripheralsById = new Dictionary<string, CBPeripheral>();
         private volatile bool _isBtEnabled;
@@ -29,10 +29,10 @@ namespace TcMenuCoreMaui.iOS.SerialImpl
             _btManager = new CBCentralManager(new TcBluetoothDelegate(this), DispatchQueue.MainQueue);
         }
 
-        public bool StartScanningPorts(SerialPortType type, Action<SerialPortInformation> portDelegate)
+        public bool StartScanningPorts(SerialPortType type, SerialPortDelegate portDelegate)
         {
             if (!_isBtEnabled) return false;
-            
+
             _portDelegate = portDelegate;
             _btManager.ScanForPeripherals(ServiceId);
             return true;
@@ -40,13 +40,13 @@ namespace TcMenuCoreMaui.iOS.SerialImpl
 
         public void StopScanningPorts()
         {
-            if(_btManager.IsScanning) _btManager.StopScan();
+            if (_btManager.IsScanning) _btManager.StopScan();
         }
 
         public IRemoteConnector CreateSerialConnector(LocalIdentification localId, SerialPortInformation info, int baud,
             IProtocolCommandConverter converter, ProtocolId protocol, SystemClock clock, bool pairing)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public string MakeIdForPeripheral(CBPeripheral peripheral)
@@ -86,8 +86,8 @@ namespace TcMenuCoreMaui.iOS.SerialImpl
                 peripheral.Name,
                 SerialPortType.BLE_BLUETOOTH,
                 _serialFactory.MakeIdForPeripheral(peripheral),
-                (double)rssi));
+                (double)rssi), SerialPortDelegateMode.AddOrUpdate);
         }
     }
-    
+
 }

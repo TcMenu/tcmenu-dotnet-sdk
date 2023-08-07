@@ -50,8 +50,6 @@ namespace embedCONTROL.Services
 
         public ApplicationContext(UiThreadMashaller marshaller, LibraryVersion version)
         {
-            var configDir = Path.Combine(FileSystem.AppDataDirectory, "embedControl");
-            System.IO.Directory.CreateDirectory(configDir);
             Version = version;
 
             ThreadMarshaller = marshaller;
@@ -59,9 +57,6 @@ namespace embedCONTROL.Services
             _persistence = new TcMenuConnectionPersistence();
             _persistence.Initialise();
             AppSettings = _persistence.LoadAppSettings();
-
-            /*var persistor = new XmlMenuConnectionPersister(configDir);
-            DataStore = new ConnectionDataStore(persistor);*/
 
             _theInstance = this;
         }

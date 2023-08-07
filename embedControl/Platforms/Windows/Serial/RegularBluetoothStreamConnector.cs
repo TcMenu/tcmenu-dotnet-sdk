@@ -8,7 +8,7 @@ using TcMenu.CoreSdk.RemoteCore;
 using TcMenu.CoreSdk.RemoteStates;
 using TcMenuCoreMaui.BaseSerial;
 
-namespace TcMenuCoreMaui.Windows.Serial
+namespace embedControl.Windows.Serial
 {
     public class RegularBluetoothStreamConnector : WindowsSendAndRecvBase
 

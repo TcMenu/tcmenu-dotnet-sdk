@@ -10,7 +10,7 @@ using TcMenu.CoreSdk.Protocol;
 using TcMenu.CoreSdk.RemoteCore;
 using IDataReader = Windows.Storage.Streams.IDataReader;
 
-namespace TcMenuCoreMaui.Windows.Serial
+namespace embedControl.Windows.Serial
 {
     public abstract class WindowsSendAndRecvBase : RemoteConnectorBase
     {

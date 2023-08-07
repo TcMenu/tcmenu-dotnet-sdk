@@ -18,6 +18,7 @@ namespace embedControl.Views
     {
         private readonly IConnectionConfiguration _existingConfiguration;
         private readonly ConnectionChangeDelegate _changeDelegate;
+        private ObservableCollection<SerialPortInformation> _serialItemSource;
         public string SaveMode => _existingConfiguration == null ? "Create Connection" : "Save Changes";
         public string PageTitle => _existingConfiguration == null ? "Create Connection" : "Edit Connection " + _existingConfiguration.Name;
         public bool DiscardButtonNeeded => _existingConfiguration != null;
@@ -59,7 +60,7 @@ namespace embedControl.Views
             else if (existingConfiguration is SerialCommsConfiguration serialComms)
             {
                 SerialPortCheckbox.IsChecked = true;
-                SerialPortPicker.SelectedItem = serialComms.SerialInfo;
+                SerialPortList.SelectedItem = serialComms.SerialInfo;
                 BaudRatePicker.SelectedItem = serialComms.BaudRate;
             }
             else if (existingConfiguration is SimulatorConfiguration simComms)
@@ -107,7 +108,7 @@ namespace embedControl.Views
             }
             else if (SerialPortCheckbox.IsChecked)
             {
-                if (BaudRatePicker.SelectedIndex != -1 && SerialPortPicker.SelectedItem is SerialPortInformation spi)
+                if (BaudRatePicker.SelectedIndex != -1 && SerialPortList.SelectedItem is SerialPortInformation spi)
                 {
                     connectionData = new SerialCommsConfiguration(spi, BaudRatePicker.SelectedItem as int? ?? 115200);
                 }
@@ -144,19 +145,32 @@ namespace embedControl.Views
 
             if (SerialPortCheckbox.IsChecked)
             {
-                SerialPortPicker.ItemsSource = new ObservableCollection<SerialPortInformation>();
-                var scanStarted = sf.StartScanningPorts(SerialPortType.ALL, portInfo =>
+                _serialItemSource = new ObservableCollection<SerialPortInformation>();
+                SerialPortList.ItemsSource = _serialItemSource;
+                var scanStarted = sf.StartScanningPorts(SerialPortType.ALL, (portInfo, serailPortMode) =>
                 {
                     ApplicationContext.Instance.ThreadMarshaller.OnUiThread(() =>
                     {
-                        SerialPortPicker?.ItemsSource.Add(portInfo);
+                        if (serailPortMode == SerialPortDelegateMode.AddOrUpdate)
+                        {
+                            _serialItemSource.Add(portInfo);
+                        }
+                        else
+                        {
+                            foreach (var sp in _serialItemSource)
+                            {
+                                if (!sp.Id.Equals(portInfo.Id)) continue;
+                                _serialItemSource.Remove(sp);
+                                break;
+                            }
+                        }
                     });
                 });
 
                 if (scanStarted)
                 {
                     BaudRatePicker.ItemsSource = SerialPortInformation.ALL_BAUD_RATES.ToList();
-                    SerialPortPicker.IsEnabled = true;
+                    SerialPortList.IsEnabled = true;
                     BaudRatePicker.IsEnabled = true;
                     BaudRatePicker.SelectedItem = 115200;
                 }
@@ -168,7 +182,7 @@ namespace embedControl.Views
             else
             {
                 sf.StopScanningPorts();
-                SerialPortPicker.ItemsSource?.Clear();
+                _serialItemSource?.Clear();
             }
         }
 

@@ -40,7 +40,7 @@ namespace embedControl.Models
 
     public class TcMenuConnectionModel : INotifyPropertyChanged
     {
-        private readonly IRemoteController _remoteController;
+        private IRemoteController _remoteController;
         private readonly PrefsAppSettings _appSettings;
         private readonly Stack<MenuItem> _navigationItems = new();
         private MenuButtonType _button1Type = MenuButtonType.NONE;
@@ -84,23 +84,27 @@ namespace embedControl.Models
         public bool Button2Visible { get; set; }
 
 
-        public TcMenuConnectionModel(IRemoteController controller, PrefsAppSettings settings, Grid controlsGrid, MenuItem where, SubMenuNavigator navigator, PairingNotifier pairingNotification)
+        public TcMenuConnectionModel(PrefsAppSettings settings, MenuItem where, PairingNotifier pairingNotification)
         {
             _navigationItems.Push(where);
-            _remoteController = controller;
             _pairingNotifier = pairingNotification;
 
             _appSettings = settings;
             var settingsConditional = new PrefsConditionalColoring(settings);
             DialogColor = new ControlToMauiColorHelper(settingsConditional, ColorComponentType.DIALOG);
             ButtonColor = new ControlToMauiColorHelper(settingsConditional, ColorComponentType.BUTTON);
+        }
 
-            var editorFactory = new MauiMenuEditorFactory(_remoteController);
-            GridComponent = new TcMenuGridComponent(_remoteController, editorFactory, settings, new MenuFormLoader(settings, controller.ManagedMenu), 
-                                                        controlsGrid, navigator);
-            GridComponent.Start(_navigationItems.Peek());
+        public void SetRemoteController(IRemoteController controller, SubMenuNavigator navigator, Grid controlsGrid)
+        {
+            _remoteController = controller;
             _remoteController.DialogUpdatedEvent += RemoteControllerOnDialogUpdatedEvent;
             _remoteController.Connector.ConnectionChanged += RemoteControllerStatusChanged;
+            var editorFactory = new MauiMenuEditorFactory(_remoteController);
+            GridComponent = new TcMenuGridComponent(_remoteController, editorFactory, _appSettings, new MenuFormLoader(_appSettings, controller.ManagedMenu),
+                controlsGrid, navigator);
+            GridComponent.Start(_navigationItems.Peek());
+
         }
 
         public void RemoteControllerStatusChanged(AuthenticationStatus connected)

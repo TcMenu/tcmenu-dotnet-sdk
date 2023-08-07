@@ -6,11 +6,15 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using embedCONTROL.Services;
+using Microsoft.Maui.Media;
+using Serilog;
+using Serilog.Core;
 using SQLite;
 using TcMenu.CoreSdk.Serialisation;
 using TcMenuCoreMaui.BaseSerial;
 using TcMenuCoreMaui.Services;
 using static embedControl.Services.TcMenuPersistedConnectionType;
+using static SQLite.SQLite3;
 
 namespace embedControl.Services
 {
@@ -135,6 +139,8 @@ namespace embedControl.Services
 
     public class TcMenuConnectionPersistence : IMenuConnectionPersister
     {
+        private readonly ILogger _logger = Log.ForContext<TcMenuConnectionPersistence>();
+
         private readonly Dictionary<int, TcMenuPanelSettings> _settings = new();
         private SQLiteConnection _database;
         
@@ -150,12 +156,20 @@ namespace embedControl.Services
                 var storageLocation = FileSystem.AppDataDirectory;
                 var sqLiteFlags = SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex;
                 var dbPath = Path.Combine(storageLocation, "EmbedControlData.db3");
-                if (_database is not null) return;
+                if (_database is not null)
+                {
+                    _logger.Error("Configuration database was not created");
+                    return;
+                }
 
                 _database = new SQLiteConnection(dbPath, sqLiteFlags);
 
+                _logger.Information("Database instance created: " + dbPath);
+
                 _database.CreateTable<PrefsPersistenceObject>();
                 _database.CreateTable<TcMenuConnectionPersistenceObject>();
+
+                _logger.Information("Tables created successfully");
 
                 ReloadAllEntriesFromDatabase();
             }
@@ -167,6 +181,8 @@ namespace embedControl.Services
 
         private void ReloadAllEntriesFromDatabase()
         {
+            _logger.Information("Start reload of connections");
+
             foreach (var tc in _database.Table<TcMenuConnectionPersistenceObject>().ToList())
             {
                 try
@@ -184,8 +200,12 @@ namespace embedControl.Services
                 }
                 catch (Exception ex)
                 {
+                    _logger.Error(ex, $"Connection reload failed '{tc.ConnectionName}' with localID {tc.LocalId}");
                 }
+                _logger.Information($"Added connection '{tc.ConnectionName}' with localID {tc.LocalId}");
             }
+
+            _logger.Information("Finished reload of connections");
         }
 
         public PrefsAppSettings LoadAppSettings()
@@ -193,6 +213,7 @@ namespace embedControl.Services
             var prefsObj = _database.Table<PrefsPersistenceObject>().FirstOrDefault();
             if (prefsObj == null)
             {
+                _logger.Information("Creating new application, no saved config");
                 var prefs = new PrefsAppSettings();
                 prefs.UniqueId = Guid.NewGuid().ToString();
                 prefs.LocalName = "Unnamed";
@@ -203,6 +224,7 @@ namespace embedControl.Services
             }
             else
             {
+                _logger.Information($"Restoring application: Name='{prefsObj.LocalName}', Uuid={prefsObj.LocalUUID}");
                 var prefs = new PrefsAppSettings();
                 prefs.LocalName = prefsObj.LocalName;
                 prefs.UniqueId = prefsObj.LocalUUID;
@@ -229,6 +251,7 @@ namespace embedControl.Services
 
         public void SaveAppSettings(PrefsAppSettings settings)
         {
+            _logger.Information("Saving application settings");
             var prefsObj = new PrefsPersistenceObject();
             prefsObj.prefsId = 0;
             prefsObj.LocalName = settings.LocalName;
@@ -256,7 +279,10 @@ namespace embedControl.Services
             if (!_settings.ContainsKey(localId)) return false;
             var data = _settings[localId];
             _settings.Remove(localId);
-            var result = _database.Delete(data);
+            var persistence = new TcMenuConnectionPersistenceObject(data);
+            var result = _database.Delete(persistence);
+            _logger.Information($"Delete stored configuration {localId} with status {result}");
+
             ChangeNotification?.Invoke(data, PanelSettingChangeMode.Deleted);
             return result != 0;
         }
@@ -267,6 +293,8 @@ namespace embedControl.Services
 
             _database.Update(new TcMenuConnectionPersistenceObject(connection));
             _settings[connection.LocalId] = connection;
+            _logger.Information($"Updated stored configuration {connection.LocalId}");
+
             ChangeNotification?.Invoke(connection, PanelSettingChangeMode.Modified);
         }
 
@@ -275,6 +303,7 @@ namespace embedControl.Services
             if (connection.LocalId != -1) return;
 
             _database.Insert(new TcMenuConnectionPersistenceObject(connection));
+            _logger.Information($"Added stored configuration {connection.ConnectionName}");
             ReloadAllEntriesFromDatabase();
 
             ChangeNotification?.Invoke(connection, PanelSettingChangeMode.Added);

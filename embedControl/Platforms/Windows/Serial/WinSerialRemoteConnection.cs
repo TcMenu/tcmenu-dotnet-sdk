@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
+using Windows.Devices.Bluetooth;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
+using Windows.Storage.Streams;
+using Serilog;
 using TcMenu.CoreSdk.Protocol;
 using TcMenu.CoreSdk.RemoteCore;
 using TcMenu.CoreSdk.RemoteStates;
 using TcMenuCoreMaui.BaseSerial;
 
-namespace TcMenuCoreMaui.Windows.Serial
+namespace embedControl.Windows.Serial
 {
     public class WinSerialRemoteConnector : WindowsSendAndRecvBase
     {
@@ -117,5 +122,4 @@ namespace TcMenuCoreMaui.Windows.Serial
 
         public override object LockObject => _portLock;
     }
-
 }

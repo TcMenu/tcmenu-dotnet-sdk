@@ -23,8 +23,7 @@ public partial class MyConnectionsPage : ContentPage
             settings.LastOpened = DateTime.Now;
             ApplicationContext.Instance.MenuPersitence.Update(settings);
 
-            var page = new TcMenuConnectionPage(settings);
-            await Shell.Current.Navigation.PushAsync(page);
+            await Shell.Current.GoToAsync("detail", new Dictionary<string, object>() { { "settings", settings} });
 
             lv.SelectedItem = null;
         }

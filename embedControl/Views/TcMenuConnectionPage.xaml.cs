@@ -12,7 +12,7 @@ using MenuItem = TcMenu.CoreSdk.MenuItems.MenuItem;
 
 namespace embedControl.Views;
 
-public partial class TcMenuConnectionPage : ContentPage
+public partial class TcMenuConnectionPage : ContentPage, IQueryAttributable
 {
     private ILogger _logger = Log.Logger.ForContext<TcMenuConnectionPage>();
     private IRemoteController _remoteController;
@@ -21,15 +21,19 @@ public partial class TcMenuConnectionPage : ContentPage
 
     public TcMenuConnectionModel ConnectionModel { get; set; }
 
-    public TcMenuConnectionPage(TcMenuPanelSettings panelSettings)
+    public TcMenuConnectionPage()
 	{
 		InitializeComponent();
 
-        _panelSettings = panelSettings;
-        _remoteController = _panelSettings.ConnectionConfiguration.Build();
-        ConnectionModel = new TcMenuConnectionModel(_remoteController, ApplicationContext.Instance.AppSettings, ControlsGrid, MenuTree.ROOT,
-            item => HandleNavigation(item as SubMenuItem), PresentPairingDialog);
+        ConnectionModel = new TcMenuConnectionModel(ApplicationContext.Instance.AppSettings, MenuTree.ROOT, PresentPairingDialog);
         BindingContext = ConnectionModel;
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        _panelSettings = query["settings"] as TcMenuPanelSettings;
+        _remoteController = _panelSettings.ConnectionConfiguration.Build();
+        ConnectionModel.SetRemoteController(_remoteController, item => HandleNavigation(item as SubMenuItem), ControlsGrid);
     }
 
     private void HandleNavigation(SubMenuItem item)
@@ -96,7 +100,7 @@ public partial class TcMenuConnectionPage : ContentPage
                 _logger.Information("Connection configuration has changed to " + configuration);
             });
 
-        await Navigation.PushModalAsync(n);
+        await Shell.Current.Navigation.PushModalAsync(n);
     }
 
     private async void PresentPairingDialog()
@@ -111,7 +115,7 @@ public partial class TcMenuConnectionPage : ContentPage
         await Navigation.PopModalAsync();
 
         _remoteController = _panelSettings.ConnectionConfiguration.Build();
-        ConnectionModel = new TcMenuConnectionModel(_remoteController, ApplicationContext.Instance.AppSettings, ControlsGrid, MenuTree.ROOT,
-            item => HandleNavigation(item as SubMenuItem), PresentPairingDialog);
+        ConnectionModel = new TcMenuConnectionModel(ApplicationContext.Instance.AppSettings, MenuTree.ROOT, PresentPairingDialog);
+        ConnectionModel.SetRemoteController(_remoteController, item => HandleNavigation(item as SubMenuItem), ControlsGrid);
     }
 }

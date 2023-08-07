@@ -19,7 +19,7 @@ namespace embedControl
 
 
             Routing.RegisterRoute("GlobalSettingsPage", typeof(GlobalSettingsPage));
-            Routing.RegisterRoute("TcMenuConnectionPage", typeof(TcMenuConnectionPage));
+            Routing.RegisterRoute("MyConnectionsPage/detail", typeof(TcMenuConnectionPage));
             Routing.RegisterRoute("NewConnectionDetail", typeof(NewConnectionDetail));
             Routing.RegisterRoute("MyConnectionsPage", typeof(MyConnectionsPage));
         }

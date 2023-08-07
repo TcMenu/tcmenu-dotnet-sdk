@@ -125,17 +125,19 @@ namespace TcMenuCoreMaui.BaseSerial
 
         public static SerialPortInformation FromWire(string text)
         {
-            var parts = text.Split(",\\s*");
+            var parts = text.Split("|");
             if(parts.Length != 3) return EMPTY;
 
-            if (!SerialPortType.TryParse(parts[1], out SerialPortType ty)) return EMPTY;
+            if (!SerialPortType.TryParse(parts[0], out SerialPortType ty)) return EMPTY;
 
-            return new SerialPortInformation(parts[0], ty, parts[1]);
+            var portName = parts[1];
+            var portId = parts[2];
+            return new SerialPortInformation(portName, ty, portId);
         }
 
         public string ToWire()
         {
-            return $"{Name},${PortType},${Id}";
+            return $"{PortType}|{Name}|{Id}";
         }
     }
 }

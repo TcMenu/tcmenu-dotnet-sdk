@@ -6,7 +6,7 @@ using TcMenu.CoreSdk.Commands;
 using TcMenu.CoreSdk.RemoteCore;
 using TcMenu.CoreSdk.RemoteStates;
 
-namespace TcMenuCoreMaui.Windows.Serial
+namespace embedControl.Windows.Serial
 {
     public class SerialWaitingForInitialMsg : BaseRemoteConnectorState
     {

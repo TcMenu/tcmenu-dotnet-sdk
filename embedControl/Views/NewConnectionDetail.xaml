@@ -59,8 +59,8 @@
             <Label Grid.Row="10" Grid.Column="1" Text="Serial port connection" FontAttributes="Bold" VerticalOptions="Center" x:Name="SerialPortLabel"/>
             <Label Grid.Row="11" Grid.Column="1" Text="Serial Port" BindingContext="{x:Reference SerialPortCheckbox}" 
                    IsVisible="{Binding IsChecked}"/>
-            <Picker Grid.Row="12" Grid.Column="1" BindingContext="{x:Reference SerialPortCheckbox}" 
-                   IsVisible="{Binding IsChecked}" x:Name="SerialPortPicker"/>
+            <ListView Grid.Row="12" Grid.Column="1" BindingContext="{x:Reference SerialPortCheckbox}" HeightRequest="120"
+                   IsVisible="{Binding IsChecked}" x:Name="SerialPortList"/>
             <Label Grid.Row="13" Grid.Column="1" Text="Baud Rate" BindingContext="{x:Reference SerialPortCheckbox}" 
                    IsVisible="{Binding IsChecked}"/>
             <Picker Grid.Row="14" Grid.Column="1" BindingContext="{x:Reference SerialPortCheckbox}" 

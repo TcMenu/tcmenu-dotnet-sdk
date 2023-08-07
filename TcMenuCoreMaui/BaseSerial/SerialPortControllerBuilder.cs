@@ -8,6 +8,20 @@ using TcMenuCoreMaui.BaseSerial;
 
 namespace TcMenuCoreMaui.BaseSerial
 {
+    public enum SerialPortDelegateMode
+    {
+        AddOrUpdate,
+        Remove
+    };
+
+    /// <summary>
+    /// When registering with serial port factories the serial information is provided back using this callback. You should compare using the ID on the info to ensure you're
+    /// not creating duplicates if that is important.
+    /// </summary>
+    /// <param name="info">the information about a discovered port</param>
+    /// <param name="mode">the mode in which it was found (updated/new) or deleted</param>
+    public delegate void SerialPortDelegate(SerialPortInformation info,  SerialPortDelegateMode mode);
+
     /// <summary>
     /// This factory is used by the below builder to generate serial connector classes, and also for getting a list
     /// of available ports.
@@ -20,7 +34,7 @@ namespace TcMenuCoreMaui.BaseSerial
         /// </summary>
         /// <param name="type">The type of ports to acquire or ALL</param>
         /// <returns>true if port scanning has started, otherwise false</returns>
-        bool StartScanningPorts(SerialPortType type, Action<SerialPortInformation> portDelegate);
+        bool StartScanningPorts(SerialPortType type, SerialPortDelegate portDelegate);
 
         /// <summary>
         /// Stops any port scanning that is associated with the above StartScanningPorts method, if any scan is still running.
