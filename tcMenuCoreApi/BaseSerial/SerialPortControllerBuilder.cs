@@ -4,9 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TcMenu.CoreSdk.Protocol;
 using TcMenu.CoreSdk.RemoteCore;
-using TcMenuCoreMaui.BaseSerial;
 
-namespace TcMenuCoreMaui.BaseSerial
+namespace TcMenu.CoreSdk.BaseSerial
 {
     public enum SerialPortDelegateMode
     {

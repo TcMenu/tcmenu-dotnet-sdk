@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TcMenuCoreMaui.BaseSerial
+namespace TcMenu.CoreSdk.BaseSerial
 {
     /// <summary>
     /// Represents the types of serial ports that can exist. Not all platforms will support all types.
@@ -125,7 +125,7 @@ namespace TcMenuCoreMaui.BaseSerial
 
         public static SerialPortInformation FromWire(string text)
         {
-            var parts = text.Split("|");
+            var parts = text.Split('|');
             if(parts.Length != 3) return EMPTY;
 
             if (!SerialPortType.TryParse(parts[0], out SerialPortType ty)) return EMPTY;

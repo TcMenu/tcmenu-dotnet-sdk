@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tcMenuCoreApi", "tcMenuCore
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tcMenuCoreApiTests", "tcMenuCoreApiTests\tcMenuCoreApiTests.csproj", "{42258CFA-8D95-4E6C-848A-81EEDE2C60FB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcMenuCoreMaui", "TcMenuCoreMaui\TcMenuCoreMaui.csproj", "{C038E918-06F7-4858-9405-3676BF263994}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "embedControl", "embedControl\embedControl.csproj", "{AA0C931D-2251-4EE6-AD44-95998CEBA27F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleApiUsage", "ExampleApiUsage\ExampleApiUsage.csproj", "{4FC4D388-9994-444D-8335-159D1124D51F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,16 +23,10 @@ Global
 		{42258CFA-8D95-4E6C-848A-81EEDE2C60FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42258CFA-8D95-4E6C-848A-81EEDE2C60FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42258CFA-8D95-4E6C-848A-81EEDE2C60FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C038E918-06F7-4858-9405-3676BF263994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C038E918-06F7-4858-9405-3676BF263994}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C038E918-06F7-4858-9405-3676BF263994}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C038E918-06F7-4858-9405-3676BF263994}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA0C931D-2251-4EE6-AD44-95998CEBA27F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA0C931D-2251-4EE6-AD44-95998CEBA27F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA0C931D-2251-4EE6-AD44-95998CEBA27F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{AA0C931D-2251-4EE6-AD44-95998CEBA27F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA0C931D-2251-4EE6-AD44-95998CEBA27F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA0C931D-2251-4EE6-AD44-95998CEBA27F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{4FC4D388-9994-444D-8335-159D1124D51F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC4D388-9994-444D-8335-159D1124D51F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FC4D388-9994-444D-8335-159D1124D51F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FC4D388-9994-444D-8335-159D1124D51F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
