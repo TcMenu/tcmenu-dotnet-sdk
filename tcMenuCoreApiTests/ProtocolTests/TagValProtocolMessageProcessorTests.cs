@@ -111,7 +111,7 @@ namespace TcMenu.CoreSdkTests.ProtocolTests
         public void TestDialogChangeConversion()
         {
             var command = new DialogCommand(DialogMode.SHOW, "header", "message", MenuButtonType.ACCEPT, MenuButtonType.CANCEL, CorrelationId.EMPTY_CORRELATION);
-            SendAndAssertMsg(command, ProtocolId.TAG_VAL_PROTOCOL, DialogCommand.DIALOG_CMD_ID, "MO=S|IC=00000000|HF=header|BU=message|B1=2|B2=3|");
+            SendAndAssertMsg(command, ProtocolId.TAG_VAL_PROTOCOL, DialogCommand.DIALOG_CMD_ID, "MO=S|IC=00000000|HF=header|BU=message|B1=1|B2=2|");
             var newCommand = protocolConverter.ConvertMessageToCommand(stream) as DialogCommand;
             Assert.AreEqual(DialogMode.SHOW, command.Mode);
             Assert.AreEqual("header", command.Header);
@@ -124,7 +124,7 @@ namespace TcMenu.CoreSdkTests.ProtocolTests
         public void TestDialogChangeConversionForAction()
         {
             var command = new DialogCommand(DialogMode.ACTION, null, null, MenuButtonType.ACCEPT, MenuButtonType.CANCEL, CorrelationId.EMPTY_CORRELATION);
-            SendAndAssertMsg(command, ProtocolId.TAG_VAL_PROTOCOL, DialogCommand.DIALOG_CMD_ID, "MO=A|IC=00000000|HF=|BU=|B1=2|B2=3|");
+            SendAndAssertMsg(command, ProtocolId.TAG_VAL_PROTOCOL, DialogCommand.DIALOG_CMD_ID, "MO=A|IC=00000000|HF=|BU=|B1=1|B2=2|");
             var newCommand = protocolConverter.ConvertMessageToCommand(stream) as DialogCommand;
             Assert.AreEqual(DialogMode.ACTION, command.Mode);
             Assert.AreEqual(null, command.Header);
