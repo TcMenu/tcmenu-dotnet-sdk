@@ -130,7 +130,7 @@ namespace TcMenu.CoreSdkTests.RemoteCore
             }
         }
 
-        public RemoteInformation RemoteInfo => new RemoteInformation("Unit test", 101, ApiPlatform.ARDUINO, Guid.NewGuid().ToString(), 123);
+        public RemoteInformation RemoteInfo => new RemoteInformation("Unit test", 101, ApiPlatform.ARDUINO, Guid.NewGuid().ToString(), "123");
 
         private volatile bool _closed, _started;
         public  bool Closed { get => _closed; private set => _closed = value; }

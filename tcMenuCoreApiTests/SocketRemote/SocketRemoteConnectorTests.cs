@@ -81,7 +81,7 @@ namespace TcMenu.CoreSdkTests.SocketRemote
             WaitForConnectorState(AuthenticationStatus.ESTABLISHED_CONNECTION);
 
             SendOnSocket(new HeartbeatCommand(HeartbeatMode.START, 1500));
-            SendOnSocket(new NewJoinerCommand("unit-test", Guid.NewGuid().ToString(), 101, ApiPlatform.DNET_API, 0));
+            SendOnSocket(new NewJoinerCommand("unit-test", Guid.NewGuid().ToString(), 101, ApiPlatform.DNET_API, "0"));
             WaitForConnectorState(AuthenticationStatus.SEND_JOIN);
             WaitForMessageOfType(typeof(NewJoinerCommand));
 

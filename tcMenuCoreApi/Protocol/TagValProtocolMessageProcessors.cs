@@ -112,7 +112,7 @@ namespace TcMenu.CoreSdk.Protocol
                 textParser.GetValueForKey(FieldKeyPairs.FIELD_UUID),
                 (ushort)textParser.GetValueForKeyAsInt(FieldKeyPairs.FIELD_VERSION),
                 (ApiPlatform)textParser.GetValueForKeyAsInt(FieldKeyPairs.FIELD_PLATFORM),
-                textParser.GetValueForKeyAsIntWithDefault(FieldKeyPairs.FIELD_SERIAL_NO, 0)
+                textParser.GetValueForKeyWithDefault(FieldKeyPairs.FIELD_SERIAL_NO, "0")
             );
         }
 

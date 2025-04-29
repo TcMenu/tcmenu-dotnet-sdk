@@ -42,14 +42,14 @@ namespace TcMenu.CoreSdkTests.ProtocolTests
         [TestMethod]
         public void TestNewJoinerMessageConversion()
         {
-            var command = new NewJoinerCommand("superClient", TEST_UUID, 100, ApiPlatform.DNET_API, 987654321);
+            var command = new NewJoinerCommand("superClient", TEST_UUID, 100, ApiPlatform.DNET_API, "987654321");
             SendAndAssertMsg(command, ProtocolId.TAG_VAL_PROTOCOL, NewJoinerCommand.NEW_JOINER_CMD_ID, $"NM=superClient|UU={TEST_UUID}|US=987654321|VE=100|PF=3|");
             var newCommand = protocolConverter.ConvertMessageToCommand(stream) as NewJoinerCommand;
             Assert.AreEqual("superClient", newCommand?.Name);
             Assert.AreEqual(TEST_UUID, newCommand?.Uuid);
             Assert.AreEqual((ushort)100, newCommand?.ApiVersion);
             Assert.AreEqual(ApiPlatform.DNET_API, newCommand?.ApiPlatform);
-            Assert.AreEqual(987654321, newCommand?.SerialNumber);
+            Assert.AreEqual("987654321", newCommand?.SerialNumber);
         }
 
         [TestMethod]

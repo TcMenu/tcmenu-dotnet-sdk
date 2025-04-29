@@ -12,7 +12,7 @@ namespace TcMenu.CoreSdk.RemoteCore
 {
     public abstract class RemoteConnectorBase : IRemoteConnector, IRemoteConnectorContext
     {
-        private const int UI_DEF_SERIAL = 0;
+        private const string UI_DEF_SERIAL = "0";
         private const int API_VERSION = 103;
         private const int BUFFER_SIZE = 1024;
         public const int TICK_INTERVAL_MILLIS = 500;

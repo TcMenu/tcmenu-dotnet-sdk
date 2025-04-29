@@ -95,7 +95,7 @@ namespace TcMenu.CoreSdk.Commands
         /// <summary>
         /// The serial number of the board
         /// </summary>
-        public int SerialNumber { get; }
+        public string SerialNumber { get; }
         /// <summary>
         /// API version for this connection
         /// </summary>
@@ -113,7 +113,7 @@ namespace TcMenu.CoreSdk.Commands
         /// <param name="version">version of the connection</param>
         /// <param name="platform">platform for the connection</param>
         /// <param name="serialNumber">the serial number for the connection</param>
-        public NewJoinerCommand(string name, string uuid, ushort version, ApiPlatform platform, int serialNumber) : base(NEW_JOINER_CMD_ID)
+        public NewJoinerCommand(string name, string uuid, ushort version, ApiPlatform platform, string serialNumber) : base(NEW_JOINER_CMD_ID)
         {
             Name = name;
             Uuid = uuid;
